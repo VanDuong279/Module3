@@ -59,10 +59,3 @@ foreign key (MaVTU) references VATTU(MaVTU),
 foreign key (SoDH) references DONDH(SoDH)
 );
 
-create table CUNGCAP (
-SoDH int,
-MaNCC int,
-foreign key (SoDH) references DONDH(SoDH),
-foreign key (MaNCC) references NHACC(MaNCC)
-);
-
