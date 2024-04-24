@@ -1,0 +1,38 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+header {
+    padding: 20px;
+    background-color: grey;
+}
+nav {
+    text-align: center;
+    margin-top: 10px;
+}
+nav ul li{
+    display: inline;
+    text-align: justify;
+    padding: 5px;
+}
+nav a {
+    text-decoration: none;
+    color: black;
+}
+#main-content {
+    display: flex;
+}
+aside {
+    flex-basis: 30%;
+    margin-top: 20px;
+}
+article {
+    flex-basis: 70%;
+    margin-top: 20px;
+}
+footer h3 {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+}
