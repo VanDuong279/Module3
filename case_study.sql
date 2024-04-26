@@ -289,3 +289,100 @@ inner join khach_hang on khach_hang.ma_khach_hang = hop_dong.ma_khach_hang
 inner join loai_khach on khach_hang.ma_loai_khach = loai_khach.ma_loai_khach
 where loai_khach.ten_loai_khach = "Diamond" and (khach_hang.dia_chi like "%Vinh" or khach_hang.dia_chi like "%Quảng Ngãi");
 
+-- 12. 
+SELECT 
+    hop_dong.ma_hop_dong,
+    nhan_vien.ho_ten AS ho_ten_nv,
+    khach_hang.ho_ten AS ho_ten_kh,
+    khach_hang.so_dien_thoai,
+    dich_vu.ten_dich_vu,
+    SUM(hop_dong_chi_tiet.so_luong) AS so_luong_dich_vu_di_kem,
+    hop_dong.tien_dat_coc
+FROM 
+    hop_dong 
+JOIN 
+    nhan_vien  ON hop_dong.ma_nhan_vien = nhan_vien.ma_nhan_vien
+JOIN 
+    khach_hang  ON hop_dong.ma_khach_hang = khach_hang.ma_khach_hang
+JOIN 
+    hop_dong_chi_tiet  ON hop_dong.ma_hop_dong = hop_dong_chi_tiet.ma_hop_dong
+JOIN 
+    dich_vu_di_kem  ON hop_dong_chi_tiet.ma_dich_vu_di_kem = dich_vu_di_kem.ma_dich_vu_di_kem
+WHERE 
+    hop_dong.ngay_lam_hop_dong BETWEEN '2020-10-01' AND '2020-12-31'
+    AND hop_dong.ma_hop_dong NOT IN (
+        SELECT ma_hop_dong
+        FROM hop_dong
+        WHERE ngay_lam_hop_dong BETWEEN '2021-01-01' AND '2021-06-30'
+    )
+GROUP BY 
+    hop_dong.ma_hop_dong,
+    ho_ten_nv,
+    ho_ten_kh,
+    khach_hang.so_dien_thoai,
+    dich_vu_di_kem.ten_dich_vu_di_kem,
+    hop_dong.tien_dat_coc;
+    
+-- 13 
+SELECT 
+    DV.ten_dich_vu_di_kem,
+    COUNT(*) AS so_lan_su_dung
+FROM 
+    hop_dong_chi_tiet HDCT
+JOIN 
+    dich_vu_di_kem DV ON HDCT.ma_dich_vu_di_kem = DV.ma_dich_vu_di_kem
+JOIN 
+    hop_dong HD ON HDCT.ma_hop_dong = HD.ma_hop_dong
+GROUP BY 
+    DV.ten_dich_vu_di_kem
+ORDER BY 
+
+-- 14.
+    COUNT(*) DESC;
+    SELECT 
+    HD.ma_hop_dong,
+    LDV.ten_loai_dich_vu,
+    DV.ten_dich_vu_di_kem,
+    COUNT(HDCT.ma_dich_vu_di_kem) AS so_lan_su_dung
+FROM 
+    hop_dong_chi_tiet HDCT
+JOIN 
+    dich_vu_di_kem DV ON HDCT.ma_dich_vu_di_kem = DV.ma_dich_vu_di_kem
+JOIN 
+    dich_vu DVU ON DV.ma_dich_vu = DVU.ma_dich_vu
+JOIN 
+    loai_dich_vu LDV ON DVU.ma_loai_dich_vu = LDV.ma_loai_dich_vu
+JOIN 
+    hop_dong HD ON HDCT.ma_hop_dong = HD.ma_hop_dong
+GROUP BY 
+    HD.ma_hop_dong,
+    LDV.ten_loai_dich_vu,
+    DV.ten_dich_vu_di_kem
+HAVING 
+    so_lan_su_dung = 1;
+
+-- 15.
+SELECT 
+    NV.ma_nhan_vien,
+    NV.ho_ten,
+    TD.ten_trinh_do,
+    BP.ten_bo_phan,
+    NV.so_dien_thoai,
+    NV.dia_chi
+FROM 
+    nhan_vien NV
+JOIN 
+    trinh_do TD ON NV.ma_trinh_do = TD.ma_trinh_do
+JOIN 
+    bo_phan BP ON NV.ma_bo_phan = BP.ma_bo_phan
+WHERE 
+    NV.ma_nhan_vien IN (
+        SELECT 
+            HD.ma_nhan_vien
+        FROM 
+            hop_dong HD
+        WHERE 
+            HD.ngay_lam_hop_dong BETWEEN '2020-01-01' AND '2021-12-31'
+        GROUP BY 
+            HD.ma_nhan_vien
+        HAVING
