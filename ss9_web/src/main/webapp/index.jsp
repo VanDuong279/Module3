@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Currency Converter</title>
@@ -28,7 +28,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Calculate Discount</button>
 </form>
-
-<h3>Result: ${result}</h3>
 </body>
 </html>
